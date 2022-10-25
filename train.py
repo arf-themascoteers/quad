@@ -1,16 +1,16 @@
-from n20_net import N20Net
+from quad_net import QuadNet
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 import torch
-from saha_dataset import SahaDataset
+from quad_dataset import QuadDataset
 
 def train():
     NUM_EPOCHS = 200
     BATCH_SIZE = 500
 
-    dataset = SahaDataset(is_train=True)
+    dataset = QuadDataset(is_train=True)
     dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
-    model = N20Net(dataset.x_dim)
+    model = QuadNet()
     model.train()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
     criterion = torch.nn.MSELoss(reduction='mean')
@@ -23,7 +23,6 @@ def train():
             loss = criterion(y_pred, y_true)
             loss.backward()
             optimizer.step()
-            #print(f'Epoch:{epoch + 1}, Loss:{loss.item():.4f}')
     print("Training done. Machine saved to models/saha.h5")
     torch.save(model.state_dict(), 'models/saha.h5')
     return model

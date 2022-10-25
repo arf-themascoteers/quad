@@ -1,14 +1,15 @@
-from n20_net import N20Net
+from quad_net import QuadNet
 from torch.utils.data import DataLoader
 import torch
-from saha_dataset import SahaDataset
+from quad_dataset import QuadDataset
+from sklearn.metrics import r2_score
 
 
 def test():
     BATCH_SIZE = 2000
-    dataset = SahaDataset(is_train=False)
+    dataset = QuadDataset(is_train=False)
     dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=False)
-    model = N20Net(dataset.x_dim)
+    model = QuadNet()
     model.load_state_dict(torch.load("models/saha.h5"))
     model.eval()
     criterion = torch.nn.MSELoss(reduction='mean')
@@ -19,11 +20,8 @@ def test():
             y_pred = model(data)
             y_pred = y_pred.reshape(-1)
             loss = criterion(y_pred, y_true)
-            print("Ground Truth\t\tPredicted")
-            for i in range(y_pred.shape[0]):
-                gt_val = y_true[i]
-                predicted = y_pred[i]
-                print(f"{gt_val:.4f}\t\t\t\t{predicted:.4f}")
-    print(f"MSE {loss:.4f}")
+            print(f"Loss {loss}")
+            print(f"R2 {r2_score(y_true, y_pred)}")
+
 if __name__ == "__main__":
     test()
