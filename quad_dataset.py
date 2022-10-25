@@ -10,8 +10,6 @@ import numpy as np
 class QuadDataset(Dataset):
     def __init__(self, is_train):
         self.is_train = is_train
-        #self.file_location = "out.csv"
-        #csv_data = pd.read_csv(self.file_location)
         a = np.random.random(1000).reshape(-1, 1)
         asq = a * a * a
         data = np.concatenate((a, asq), 1)
